@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+    php:
+        container_name: test_php
+        image: php:8.2-apache
+        volumes:
+             - ./sc:/var/www/html
+        ports:
+            - "18088:80"
+    
