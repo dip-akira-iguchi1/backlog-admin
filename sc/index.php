@@ -51,17 +51,13 @@
                     <div class="select-wrapper">
                         <select id="status">
                             <option value="">すべて</option>
-                            <option value="処理中">処理中</option>
-                            <option value="未対応">未対応</option>
-                            <option value="処理済み">処理済み</option>
-                            <option value="WfR">WfR</option>
                         </select>
                     </div>
                 </div>
             </div>
         </section>
 
-        <table id="backlogissue">
+        <table>
             <button onclick="AllDisp()">全表示</button><br>
 
             <input type="text" id="search" placeholder="検索（未実装）"><br>
@@ -77,21 +73,37 @@
             <button onclick="CopyAsScrum()">スクスク形式でコピーできる</button><br>
 
             <button onclick="CopyAsMpMtg()">MP定例資料形式でコピーできる</button><br>
-            <thead>
-                <tr>
-                    <th>課題ID</th>
-                    <th>課題名</th>
-                    <th>担当者</th>
-                    <th class='none'>状態</th>
-                    <th class="none">開始日</th>
-                    <th class="none">期限日</th>
-                    <th>リリース日</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
         </table>
+
+        <section>
+            <h2 class="section-heading">課題一覧</h2>
+            <div class="table-container">
+                <table id="backlogissue" class="issue-table" aria-label="Backlogの課題一覧">
+                    <colgroup>
+                        <col style="width: 15%;">
+                        <col style="width: 35%;">
+                        <col style="width: 10%;">
+                        <col style="width: 10%;">
+                        <col style="width: 10%;">
+                        <col style="width: 10%;">
+                        <col style="width: 10%;">
+                    </colgroup>
+                    <thead>
+                        <tr class="issue-table-cell">
+                            <th>課題ID</th>
+                            <th>課題名</th>
+                            <th>担当者</th>
+                            <th>状態</th>
+                            <th>開始日</th>
+                            <th>期限日</th>
+                            <th>リリース日</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </section>
     </main>
     <style>
         .none {
@@ -367,6 +379,21 @@
             }
         }
 
+        const getStatusClassName = (status) => {
+            const statusClassName = {
+                '未対応': 'is-pending',
+                'Ready': 'is-progress',
+                '処理中': 'is-progress',
+                '処理済み': 'is-processed',
+                '完了': 'is-completed',
+                '受入テスト中': 'is-UAT',
+                'WfR': 'is-wfr',
+                'テスト中': 'is-test'
+            };
+
+            return statusClassName[status] ? statusClassName[status] : '';
+        }
+
         (async () => {
 
             const excludes = ['RFC-11165', 'RFC-10542', 'RFC-10485', 'HATA_FRONT-1135'];
@@ -388,7 +415,7 @@
                 const link = `https://dip-dev.backlog.jp/view/${issue.issueKey}`;
                 let button = '';
                 if (!issue.issueKey.includes('RFC-') && !issue.issueKey.includes('HA_AT-')) {
-                    button = `<button id="${issue.id}" onclick="getChild(${issue.id})">子</button>`;
+                    button = `<button class="child-btn" id="${issue.id}" onclick="getChild(${issue.id} data-children="true")"><span class="detail">詳細</span></button>`;
                 }
 
                 let summary = issue.summary.replace(/【(?!SEO施策|AT取込|既バグ|改修|改善|提案|改善・提案).*?】|ADOBE-\d{4}/g, '');
@@ -396,14 +423,13 @@
                     summary = summary.replace(/【AT取込】/g, '');
                 }
                 tr.innerHTML = `
-                <td class="child" _id="${issue?.group}" _parents='${issue?.parentIssueId}'><a href='${link}' target='_blank'>${issue.issueKey}</a></td>
+                <td class="child" _id="${issue?.group}" _parents='${issue?.parentIssueId}'><a href='${link}' target='_blank'>${issue.issueKey}</a><br>${button}</td>
                 <td>${summary}</td>
                 <td>${issue.assignee?.name}</td>
-                <td class='none'>${issue.status.name}</td>
+                <td class='status ${getStatusClassName(issue.status.name)}'>${issue.status.name}</td>
                 <td class='none'>${dateFormat(issue.startDate)}</td>
                 <td class='none'>${dateFormat(issue.dueDate)}</td>
-                <td>${dateFormat([...issue.customFields].filter((v) => v.name === 'リリース日' && v.value !== null)[0]?.value)}</td>
-                <td>${button}</td>
+                <td class='none'>${dateFormat([...issue.customFields].filter((v) => v.name === 'リリース日' && v.value !== null)[0]?.value)}</td>
             `;
 
                 if (issue.highlight) {
@@ -428,8 +454,10 @@
 
             const statusList = [...new Set(issues.map(issue => issue.status.name))];
             const statusContainer = document.createElement('div');
+            const statusSelect = document.getElementById('status');
 
             statusList.forEach(status => {
+                // チェックボックス
                 const checkbox = document.createElement('input');
                 checkbox.type = 'checkbox';
                 checkbox.value = status;
@@ -441,6 +469,13 @@
 
                 statusContainer.appendChild(checkbox);
                 statusContainer.appendChild(label);
+
+                // セレクト
+                const option = document.createElement("option");
+                option.value = status;
+                option.text = status;
+
+                statusSelect.appendChild(option);
             });
 
             const backlogissue = document.querySelector('#backlogissue');
@@ -449,6 +484,17 @@
 
             statusContainer.addEventListener('change', () => {
                 const selectedStatuses = Array.from(statusContainer.querySelectorAll('input:checked')).map(input => input.value);
+                document.querySelectorAll('#backlogissue tbody tr')?.forEach(tr => {
+                    if (selectedStatuses.length === 0 || selectedStatuses.includes(tr.children[3].textContent)) {
+                        tr.style.display = 'table-row';
+                    } else {
+                        tr.style.display = 'none';
+                    }
+                });
+            });
+
+            statusSelect.addEventListener('change', () => {
+                const selectedStatuses = Array.from(statusSelect.selectedOptions).map(input => input.value);
                 document.querySelectorAll('#backlogissue tbody tr')?.forEach(tr => {
                     if (selectedStatuses.length === 0 || selectedStatuses.includes(tr.children[3].textContent)) {
                         tr.style.display = 'table-row';
