@@ -33,7 +33,7 @@
             <h2 class="section-heading">フィルタリング</h2>
             <div class="filter-container">
                 <div class="filter-parts">
-                    <label for="search">検索:</label>
+                    <label for="search">検索:（未実装）</label>
                     <div class="search-wrapper">
                         <input type="text" id="search" placeholder="検索ワードを入力">
                     </div>
