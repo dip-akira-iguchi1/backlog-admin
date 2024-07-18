@@ -316,12 +316,12 @@
         }
 
         const getChild = async (id) => {
-            if (document.getElementById(id).dataset.children === 'true') {
+            if (document.getElementById(id).dataset.children === 'false') {
                 Array.from(document.getElementsByClassName('child-' + id)).map((v) =>
                     v.style.display == 'none' ? v.style.display = 'table-row' : v.style.display = 'none')
                 return false;
             }
-            document.getElementById(id).dataset.children = true;
+            document.getElementById(id).dataset.children = false;
 
             const children = await getHATA_FRONT_CHILD_Issues([id]);
 
@@ -415,7 +415,7 @@
                 const link = `https://dip-dev.backlog.jp/view/${issue.issueKey}`;
                 let button = '';
                 if (!issue.issueKey.includes('RFC-') && !issue.issueKey.includes('HA_AT-')) {
-                    button = `<button class="child-btn" id="${issue.id}" onclick="getChild(${issue.id} data-children="true")"><span class="detail">詳細</span></button>`;
+                    button = `<button class="child-btn" id="${issue.id}" onclick="getChild(${issue.id})" data-children="true"><span class="detail">詳細</span></button>`;
                 }
 
                 let summary = issue.summary.replace(/【(?!SEO施策|AT取込|既バグ|改修|改善|提案|改善・提案).*?】|ADOBE-\d{4}/g, '');
