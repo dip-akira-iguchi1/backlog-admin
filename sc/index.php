@@ -29,6 +29,38 @@
             </div>
         </section>
 
+        <section>
+            <h2 class="section-heading">フィルタリング</h2>
+            <div class="filter-container">
+                <div class="filter-parts">
+                    <label for="search">検索:</label>
+                    <div class="search-wrapper">
+                        <input type="text" id="search" placeholder="検索ワードを入力">
+                    </div>
+                </div>
+                <div class="filter-parts">
+                    <label for="assignee">担当者:</label>
+                    <div class="select-wrapper">
+                        <select id="assignee">
+                            <option value="">すべて</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="filter-parts">
+                    <label for="status">状態:</label>
+                    <div class="select-wrapper">
+                        <select id="status">
+                            <option value="">すべて</option>
+                            <option value="処理中">処理中</option>
+                            <option value="未対応">未対応</option>
+                            <option value="処理済み">処理済み</option>
+                            <option value="WfR">WfR</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <table id="backlogissue">
             <button onclick="AllDisp()">全表示</button><br>
 
@@ -427,12 +459,12 @@
             });
 
             const assigneeList = [...new Set(issues.filter((v) => v.assignee?.name != undefined).map(issue => issue.assignee?.name))];
-            const assigneeSelect = document.createElement('select');
+            const assigneeSelect = document.querySelector('#assignee');
             assigneeSelect.innerHTML = `
-            <option value="">すべて</option>
-            ${assigneeList.map(assignee => `<option value="${assignee}">${assignee}</option>`).join('')}
-        `;
-            document.querySelector('#backlogissue thead tr').children[2].appendChild(assigneeSelect);
+                <option value="">すべて</option>
+                ${assigneeList.map(assignee => `<option value="${assignee}">${assignee}</option>`).join('')}
+            `;
+
             assigneeSelect.addEventListener('change', () => {
                 const selectedAssignee = assigneeSelect.value;
                 document.querySelectorAll('#backlogissue tbody tr')?.forEach(tr => {
