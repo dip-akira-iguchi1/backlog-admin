@@ -17,9 +17,10 @@ const haatAssigneeIds = ['1074452446','1074464638','1074481097','1074390732'];
 // HATA_FRONTからとってくる
 const getHATA_FRONT_Issues = async () => {
     const api = url + 'issues?apiKey=' + apiKey + '&projectId[]=1073968314&parentChild=1&categoryId[]=' + categoryId+ '&statusId[]=1&statusId[]=17538&statusId[]=2&statusId[]=3&statusId[]=17722&statusId[]=19080&statusId[]=17539&statusId[]=33258&count=100';
-    console.log(api);
+    // console.log(api);
     return new Promise((resolve, reject) => {
         fetch(api).then(res => res.json()).then(data => {
+            // console.log("getHATA_FRONT_Issues", data);
             resolve(data);
         });
     });
@@ -33,6 +34,7 @@ const getHATA_FRONT_CHILD_Issues = async (issueId) => {
     const api = url + 'issues?apiKey=' + apiKey + '&' + issueids + '&projectId[]=1073968314&categoryId[]=' + categoryId+ '&count=100';
     return new Promise((resolve, reject) => {
         fetch(api).then(res => res.json()).then(data => {
+            // console.log("getHATA_FRONT_CHILD_Issues", data);
             resolve(data);
         });
     });
@@ -46,6 +48,7 @@ const getRFC_HAAT_Issues = async () => {
     const api = url + 'issues?apiKey=' + apiKey + '&'+projectIds+'&'+assigneeIds+ '&statusId[]=1&statusId[]=2&statusId[]=3&count=100';
     return new Promise((resolve, reject) => {
         fetch(api).then(res => res.json()).then(data => {
+            // console.log("getRFC_HAAT_Issues", data);
             resolve(data);
         });
     });

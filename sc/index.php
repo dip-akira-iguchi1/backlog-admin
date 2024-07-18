@@ -1,39 +1,66 @@
 <!DOCTYPE html>
-
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Backlogの課題一覧</title>
+    <!-- <link rel="stylesheet" href="styles/reset.css"> -->
+    <link rel="stylesheet" href="styles/app.css">
+</head>
 <body>
-    <h1>僕に関連すると思わしきBacklogの課題一覧</h1>
+    <main>
 
-    <table id="backlogissue">
-        <button onclick="AllDisp()">全表示</button><br>
+        <h1>僕に関連すると思わしきBacklogの課題一覧</h1>
 
-        <input type="text" id="search" placeholder="検索（未実装）"><br>
+        <section>
+            <h2 class="section-heading">課題ID一覧</h2>
+            <div class="tab-container">
+                <div class="tabs" role="tablist">
+                    <button id="tab-1" class="tab" role="tab" aria-selected="true" aria-controls="tab-panel-1" onclick="tabIssue('#tab-panel-1')">すべて</button>
+                    <button id="tab-2" class="tab" role="tab" aria-selected="false" aria-controls="tab-panel-2" onclick="tabIssue('#tab-panel-2')">RFC</button>
+                    <button id="tab-3" class="tab" role="tab" aria-selected="false" aria-controls="tab-panel-3" onclick="tabIssue('#tab-panel-3')">HA_AT</button>
+                </div>
+                <div id="tab-panel-1" class="tab-panel" role="tabpanel" aria-labelledby="tab-1">
+                </div>
+                <div id="tab-panel-2" class="tab-panel is-hidden" role="tabpanel" aria-labelledby="tab-2" hidden>
+                </div>
+                <div id="tab-panel-3" class="tab-panel is-hidden" role="tabpanel" aria-labelledby="tab-3" hidden>
+                </div>
+            </div>
+        </section>
 
-        <button onclick="disp()">HATA_FRONT表示</button><br>
+        <table id="backlogissue">
+            <button onclick="AllDisp()">全表示</button><br>
 
-        <button onclick="showItems()">開始・期限・リリース日表示非表示</button><br>
+            <input type="text" id="search" placeholder="検索（未実装）"><br>
 
-        <button onclick="showParents()">RFC&HA_AT表示（HATA_FRONT無し）</button><br>
+            <button onclick="disp()">HATA_FRONT表示</button><br>
 
-        <button onclick="showParentsHasChild()">RFC&HA_AT表示（HATA_FRONT有り）</button><br>
+            <button onclick="showItems()">開始・期限・リリース日表示非表示</button><br>
 
-        <button onclick="CopyAsScrum()">スクスク形式でコピーできる</button><br>
+            <button onclick="showParents()">RFC&HA_AT表示（HATA_FRONT無し）</button><br>
 
-        <button onclick="CopyAsMpMtg()">MP定例資料形式でコピーできる</button><br>
-        <thead>
-            <tr>
-                <th>課題ID</th>
-                <th>課題名</th>
-                <th>担当者</th>
-                <th class='none'>状態</th>
-                <th class="none">開始日</th>
-                <th class="none">期限日</th>
-                <th>リリース日</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
+            <button onclick="showParentsHasChild()">RFC&HA_AT表示（HATA_FRONT有り）</button><br>
+
+            <button onclick="CopyAsScrum()">スクスク形式でコピーできる</button><br>
+
+            <button onclick="CopyAsMpMtg()">MP定例資料形式でコピーできる</button><br>
+            <thead>
+                <tr>
+                    <th>課題ID</th>
+                    <th>課題名</th>
+                    <th>担当者</th>
+                    <th class='none'>状態</th>
+                    <th class="none">開始日</th>
+                    <th class="none">期限日</th>
+                    <th>リリース日</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </main>
     <style>
         .none {
             display: none;
@@ -66,6 +93,21 @@
                 'テスト中': '単体結合テスト中'
             }
         ]
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const tabs = document.querySelectorAll('.tab');
+            const tabPanels = document.querySelectorAll('.tab-panel');
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    tabs.forEach(tab => tab.setAttribute('aria-selected', 'false'));
+                    tabPanels.forEach(panel => panel.classList.add('is-hidden'));
+                    tab.setAttribute('aria-selected', 'true');
+                    const selectedTabPanel = document.getElementById(tab.getAttribute('aria-controls'));
+                    selectedTabPanel.classList.remove('is-hidden');
+                });
+            });
+        });
 
         function AllDisp() {
             const trs = document.querySelectorAll('#backlogissue tbody tr');
@@ -264,6 +306,35 @@
             })
         }
 
+        const tabIssue = async (tabPanel) => {
+            document.querySelector(tabPanel).innerHTML = '';
+            const excludes = ['RFC-11165', 'RFC-10542', 'RFC-10485', 'HATA_FRONT-1135'];
+            const RFC_HAAT_ISSUES = await getRFC_HAAT_Issues();
+            const HATA_FRONT_ISSUES = await getHATA_FRONT_Issues();
+            const issues = RFC_HAAT_ISSUES.concat(HATA_FRONT_ISSUES);
+
+            [...issues].filter((v) => tabIssueFilter(v, tabPanel, excludes)).map(issue => {
+                const button = document.createElement('button');
+                const issueType = issue.issueKey.includes('RFC-') ? 'rfc' : 'at';
+                button.className = `ticket-tag is-${issueType}`;
+                const link = `https://dip-dev.backlog.jp/view/${issue.issueKey}`;
+
+                button.innerHTML = `<a href='${link}' target='_blank'>${issue.issueKey}</a>`;
+
+                document.querySelector(tabPanel).appendChild(button);
+            });
+        }
+
+        const tabIssueFilter = (issue, tabPanel, excludes) => {
+            if (tabPanel === '#tab-panel-1') {
+                return (issue.issueKey.includes('RFC-') || issue.issueKey.includes('HA_AT-')) && (!issue.summary.includes('スケルトン') && !excludes.includes(issue.issueKey));
+            } else if (tabPanel === '#tab-panel-2') {
+                return issue.issueKey.includes('RFC-') && (!issue.summary.includes('スケルトン') && !excludes.includes(issue.issueKey));
+            } else if (tabPanel === '#tab-panel-3') {
+                return issue.issueKey.includes('HA_AT-') && (!issue.summary.includes('スケルトン') && !excludes.includes(issue.issueKey));
+            }
+        }
+
         (async () => {
 
             const excludes = ['RFC-11165', 'RFC-10542', 'RFC-10485', 'HATA_FRONT-1135'];
@@ -307,6 +378,19 @@
                     tr.style.backgroundColor = '#BBBBFF';
                 }
                 document.querySelector('#backlogissue tbody').appendChild(tr);
+            });
+
+
+            // 課題ID一覧
+            [...issues].filter((v) => (v.issueKey.includes('RFC-') || v.issueKey.includes('HA_AT-')) && (!v.summary.includes('スケルトン') && !excludes.includes(v.issueKey))).map(issue => {
+                const button = document.createElement('button');
+                const issueType = issue.issueKey.includes('RFC-') ? 'rfc' : 'at';
+                button.className = `ticket-tag is-${issueType}`;
+                const link = `https://dip-dev.backlog.jp/view/${issue.issueKey}`;
+
+                button.innerHTML = `<a href='${link}' target='_blank'>${issue.issueKey}</a>`;
+
+                document.querySelector('#tab-panel-1').appendChild(button);
             });
 
 

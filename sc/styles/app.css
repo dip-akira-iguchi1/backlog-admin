@@ -1,0 +1,269 @@
+/* ベース */
+body {
+  font-family: 'Nunito Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  background-color: #ebebeb;
+  color: #333;
+}
+main {
+  width: 980px;
+  margin: 0 auto;
+  padding: 20px 0;
+}
+a {
+  color: #5d739d;
+  transition: opacity 0.3s ease;
+}
+a:hover {
+  opacity: 0.7;
+}
+a:visited {
+  color: #8b3f9c;
+}
+
+/* 見出し */
+.app-heading {
+  font-size: 24px;
+  font-weight: bold;
+}
+.section-heading {
+  margin-top: 20px;
+  color: #13131e;
+  font-size: 16px;
+}
+
+/* コンテナ共通 */
+.tab-container,
+.filter-container,
+.table-container {
+  background-color: #fff;
+  border-radius: 8px;
+  margin-top: 8px;
+  box-shadow: 0 4px 4px rgba(220, 220, 220, 0.1);
+}
+
+/* タブ */
+.tab-container {
+  min-height: 164px;
+}
+.tabs {
+  display: flex;
+}
+.tab {
+  background-color: #fff;
+  border: 2px solid transparent;
+  border-radius: 8px 8px 0 0;
+  min-width: 84px;
+  padding: 10px 16px;
+  color: #888;
+  font-size: 14px;
+  line-height: 1;
+  text-align: center;
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+}
+.tab[aria-selected="true"] {
+  color: #13131e;
+  border-bottom: 2px solid #13131e;
+}
+.tab:hover {
+  opacity: 0.7;
+}
+.tab-panel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 20px;
+}
+.tab-panel.is-hidden {
+  display: none;
+}
+
+/* タブ内のチケットタグ */
+.ticket-tag {
+  background-color: #fff;
+  border: 1px solid #666;
+  border-radius: 9999px;
+  padding: 4px 12px;
+  color: #666;
+  font-size: 13px;
+  line-height: 1;
+  transition: opacity 0.3s ease;
+
+  a {
+    text-decoration: none;
+  }
+}
+.ticket-tag:hover {
+  opacity: 0.7;
+}
+.ticket-tag.is-rfc {
+  border-color: #005bae;
+  a {
+    color: #005bae;
+  }
+}
+.ticket-tag.is-at {
+  border-color: #e27108;
+  a {
+    color: #e27108;
+  }
+}
+
+/* フィルタ */
+.filter-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 40px;
+  padding: 20px;
+}
+.filter-parts label {
+  display: block;
+  color: #666;
+  font-size: 12px;
+  margin-bottom: 2px;
+}
+.filter-parts #search,
+.filter-parts #assignee,
+.filter-parts #status {
+  position: relative;
+  border: 1px solid #a5b1ca;
+  outline-color: #8193bb;
+  border-radius: 6px;
+  width: 168px;
+  padding: 8px 12px;
+  color: #666;
+  font-size: 13px;
+  cursor: pointer;
+}
+.filter-parts #search {
+  padding: 8px 32px 8px 12px;
+}
+.filter-parts #assignee,
+.filter-parts #status {
+  padding: 8px 12px;
+}
+.filter-parts .search-wrapper,
+.filter-parts .select-wrapper {
+  position: relative;
+}
+.filter-parts .search-wrapper::after {
+  content: '';
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  mask-image: url('data:image/svg+xml;base64, PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGcgaWQ9Imljb25fbWVnYW5lIj4KPHBhdGggaWQ9IlVuaW9uIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGNsaXAtcnVsZT0iZXZlbm9kZCIgZD0iTTkuMDgzODEgMTYuMTY4MkM1LjE3MTYyIDE2LjE2ODIgMiAxMi45OTY1IDIgOS4wODQxMUMyIDUuMTcxNzQgNS4xNzE2MiAyIDkuMDgzODEgMkMxMi45OTYgMiAxNi4xNjc2IDUuMTcxNzQgMTYuMTY3NiA5LjA4NDExQzE2LjE2NzYgMTIuOTk2NSAxMi45OTYgMTYuMTY4MiA5LjA4MzgxIDE2LjE2ODJaTTAgOS4wODQxMUMwIDQuMDY3MjYgNC4wNjY5NiAwIDkuMDgzODEgMEMxNC4xMDA3IDAgMTguMTY3NiA0LjA2NzI2IDE4LjE2NzYgOS4wODQxMUMxOC4xNjc2IDExLjA2MjggMTcuNTM1IDEyLjg5MzggMTYuNDYwOSAxNC4zODU4QzE2LjU0NzQgMTQuNDQyIDE2LjYyOTMgMTQuNTA4IDE2LjcwNTIgMTQuNTgzOUwxOS41NTk0IDE3LjQzODJDMjAuMTQ1MiAxOC4wMjQgMjAuMTQ1MiAxOC45NzM4IDE5LjU1OTQgMTkuNTU5NkMxOC45NzM2IDIwLjE0NTQgMTguMDIzOSAyMC4xNDU0IDE3LjQzODEgMTkuNTU5NkwxNC41ODM5IDE2LjcwNTJDMTQuNTA4MSAxNi42Mjk0IDE0LjQ0MjEgMTYuNTQ3NSAxNC4zODU5IDE2LjQ2MUMxMi44OTM5IDE3LjUzNTQgMTEuMDYyNyAxOC4xNjgyIDkuMDgzODEgMTguMTY4MkM0LjA2Njk2IDE4LjE2ODIgMCAxNC4xMDEgMCA5LjA4NDExWiIgZmlsbD0id2hpdGUiLz4KPC9nPgo8L3N2Zz4K');
+  mask-size: contain;
+  background-color: #a5b1ca;
+}
+.filter-parts .select-wrapper::after { /* 下向き三角矢印 */
+  position: absolute;
+  content: '';
+  top: 50%;
+  right: 12px;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid #a5b1ca;
+  transform: translateY(-40%);
+}
+
+/* 課題テーブル */
+.issue-table  {
+  width: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.issue-table thead th {
+  padding: 10px 12px;
+  font-size: 14px;
+  font-weight: normal;
+  line-height: 1;
+  color: #fff;
+  background-color: #a5b1ca;
+}
+.issue-table tbody td {
+  position: relative;
+  padding: 8px 12px;
+  font-size: 13px;
+}
+.issue-table tbody td.is-expired {
+  color: #f11717;
+}
+.issue-table tbody tr:first-of-type td {
+  padding: 16px 12px 8px;
+}
+.issue-table tbody tr:last-of-type td {
+  padding: 8px 12px 16px;
+}
+.issue-table tbody td:nth-of-type(2) {
+  display: block;
+  width: 340px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.issue-table tbody [class^="child-"] td:first-child::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: #8094be;
+  width: 3px;
+  height: 100%;
+}
+
+/* 詳細ボタン */
+.detail {
+  position: relative;
+  display: inline-block;
+  padding: 2px 16px 2px 8px;
+  border: 1px solid #666;
+  border-radius: 4px;
+  color: #666;
+  font-size: 12px;
+  line-height: 1;
+  transition: opacity 0.3s ease;
+}
+.detail:hover {
+  opacity: 0.7;
+}
+.detail::after { /* 下向き三角矢印 */
+  position: absolute;
+  content: '';
+  top: 50%;
+  right: 4px;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid #888;
+  transform: translateY(-40%);
+}
+
+/* ステータスアイコン */
+.status {
+  background-color: #fff;
+  display: inline-block;
+  padding: 2px 8px;
+  border: 1px solid #666;
+  border-radius: 9999px;
+  color: #666;
+  font-size: 12px;
+  line-height: 1;
+}
+.status.is-pending {
+  color: #b916a4;
+  border-color: #b916a4;
+}
+.status.is-progress {
+  color: #005bae;
+  border-color: #005bae;
+}
+.status.is-completed {
+  color: #1ba076;
+  border-color: #1ba076;
+}
+.status.is-wfr {
+  color: #e27108;
+  border-color: #e27108;
+}
