@@ -350,6 +350,7 @@
             })
         }
 
+        // FIXME: タブを選択する度にAPIを叩いている
         const tabIssue = async (tabPanel) => {
             document.querySelector(tabPanel).innerHTML = '';
             const excludes = ['RFC-11165', 'RFC-10542', 'RFC-10485', 'HATA_FRONT-1135'];
@@ -415,6 +416,7 @@
                 const link = `https://dip-dev.backlog.jp/view/${issue.issueKey}`;
                 let button = '';
                 if (!issue.issueKey.includes('RFC-') && !issue.issueKey.includes('HA_AT-')) {
+                    // FIXME: 子課題がない課題でもボタンが表示される
                     button = `<button class="child-btn" id="${issue.id}" onclick="getChild(${issue.id})" data-children="true"><span class="detail">詳細</span></button>`;
                 }
 
