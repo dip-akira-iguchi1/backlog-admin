@@ -354,9 +354,7 @@
         const tabIssue = async (tabPanel) => {
             document.querySelector(tabPanel).innerHTML = '';
             const excludes = ['RFC-11165', 'RFC-10542', 'RFC-10485', 'HATA_FRONT-1135'];
-            const RFC_HAAT_ISSUES = await getRFC_HAAT_Issues();
-            const HATA_FRONT_ISSUES = await getHATA_FRONT_Issues();
-            const issues = RFC_HAAT_ISSUES.concat(HATA_FRONT_ISSUES);
+            const issues = await getRFC_HAAT_Issues();
 
             [...issues].filter((v) => tabIssueFilter(v, tabPanel, excludes)).map(issue => {
                 const button = document.createElement('button');
