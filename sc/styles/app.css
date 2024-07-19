@@ -31,6 +31,11 @@ a:visited {
   font-size: 16px;
 }
 
+.title {
+  font-size: 22px;
+  font-weight: bold;
+}
+
 /* コンテナ共通 */
 .tab-container,
 .filter-container,
@@ -171,7 +176,22 @@ a:visited {
   transform: translateY(-40%);
 }
 
+.issues-pattern {
+  padding: 20px;
+  background-color: #fff;
+
+  button, input {
+    padding: 3px;
+    border: 1px solid #666;
+    margin: 5px 0;
+  }
+}
+
 /* 課題テーブル */
+.checkbox-status {
+  appearance: auto;
+  margin: 0 10px;
+}
 .issue-table  {
   width: 100%;
   border-radius: 8px;

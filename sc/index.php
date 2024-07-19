@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Backlogの課題一覧</title>
-    <!-- <link rel="stylesheet" href="styles/reset.css"> -->
+    <link rel="stylesheet" href="styles/reset.css">
     <link rel="stylesheet" href="styles/app.css">
 </head>
 <body>
     <main>
 
-        <h1>僕に関連すると思わしきBacklogの課題一覧</h1>
+        <h1 class="title">僕に関連すると思わしきBacklogの課題一覧</h1>
 
         <section>
             <h2 class="section-heading">課題ID一覧</h2>
@@ -57,23 +57,26 @@
             </div>
         </section>
 
-        <table>
-            <button onclick="AllDisp()">全表示</button><br>
-
+        <section class="issues-pattern">
             <input type="text" id="search" placeholder="検索（未実装）"><br>
 
-            <button onclick="disp()">HATA_FRONT表示</button><br>
+            <div>
+                <button onclick="AllDisp()">全表示</button><br>
 
-            <button onclick="showItems()">開始・期限・リリース日表示非表示</button><br>
+                <button onclick="disp()">HATA_FRONT表示</button><br>
 
-            <button onclick="showParents()">RFC&HA_AT表示（HATA_FRONT無し）</button><br>
+                <button onclick="showItems()">開始・期限・リリース日表示非表示</button><br>
 
-            <button onclick="showParentsHasChild()">RFC&HA_AT表示（HATA_FRONT有り）</button><br>
+                <button onclick="showParents()">RFC&HA_AT表示（HATA_FRONT無し）</button><br>
 
-            <button onclick="CopyAsScrum()">スクスク形式でコピーできる</button><br>
+                <button onclick="showParentsHasChild()">RFC&HA_AT表示（HATA_FRONT有り）</button><br>
 
-            <button onclick="CopyAsMpMtg()">MP定例資料形式でコピーできる</button><br>
-        </table>
+                <button onclick="CopyAsScrum()">スクスク形式でコピーできる</button><br>
+
+                <button onclick="CopyAsMpMtg()">MP定例資料形式でコピーできる</button><br>
+            </div>
+        </section>
+
 
         <section>
             <h2 class="section-heading">課題一覧</h2>
@@ -462,6 +465,7 @@
                 checkbox.type = 'checkbox';
                 checkbox.value = status;
                 checkbox.id = `status-${status}`;
+                checkbox.className = "checkbox-status";
 
                 const label = document.createElement('label');
                 label.htmlFor = `status-${status}`;
